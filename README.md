@@ -64,6 +64,17 @@ type may be able to provide that protection.
 <class '__main__.MyStr2'>
 ```
 
+## Accessing the Wrapped Value
+
+To access the underlying, wrapped value, use the `value` property.
+
+```python
+>>> bar.value
+'barbaz'
+>>> type(bar.value)
+<type 'str'>
+```
+
 ## How Type Conversion Works
 
 Results of method calls are only converted for types which support equality
