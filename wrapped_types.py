@@ -43,19 +43,31 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__add__'):
                 def __add__(self, other):
-                    return self._convert(self._value + other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value + other._value)
+                    else:
+                        return self._convert(self._value + other)
 
             if hasattr(type_, '__and__'):
                 def __and__(self, other):
-                    return self._convert(self._value & other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value & other._value)
+                    else:
+                        return self._convert(self._value & other)
 
             if hasattr(type_, '__coerce__'):
                 def __coerce__(self, other):
-                    return (self._value, type_(other))
+                    if isinstance(other, self.__class__):
+                        return None
+                    else:
+                        return (self._value, type_(other))
 
             if hasattr(type_, '__cmp__'):
                 def __cmp__(self, other):
-                    return cmp(self._value, other)
+                    if isinstance(other, self.__class__):
+                        return cmp(self._value, other._value)
+                    else:
+                        return cmp(self._value, other)
 
             if hasattr(type_, '__complex__'):
                 def __complex__(self):
@@ -79,15 +91,24 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__divmod__'):
                 def __divmod__(self, other):
-                    return divmod(self._value, other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(divmod(self._value, other._value))
+                    else:
+                        return self._convert(divmod(self._value, other))
 
             if hasattr(type_, '__div__'):
                 def __div__(self, other):
-                    return self._convert(self._value / other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value / other._value)
+                    else:
+                        return self._convert(self._value / other)
 
             if hasattr(type_, '__eq__'):
                 def __eq__(self, other):
-                    return self._convert(self._value == other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value == other._value)
+                    else:
+                        return self._convert(self._value == other)
 
             if hasattr(type_, '__float__'):
                 def __float__(self):
@@ -95,11 +116,17 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__floordiv__'):
                 def __floordiv__(self, other):
-                    return self._convert(self._value // other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value // other._value)
+                    else:
+                        return self._convert(self._value // other)
 
             if hasattr(type_, '__ge__'):
                 def __ge__(self, other):
-                    return self._convert(self._value >= other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value >= other._value)
+                    else:
+                        return self._convert(self._value >= other)
 
             if hasattr(type_, '__getitem__'):
                 def __getitem__(self, index):
@@ -107,7 +134,10 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__gt__'):
                 def __gt__(self, other):
-                    return self._convert(self._value > other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value > other._value)
+                    else:
+                        return self._convert(self._value > other)
 
             if hasattr(type_, '__hex__'):
                 def __hex__(self):
@@ -115,31 +145,52 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__iadd__'):
                 def __iadd__(self, other):
-                    self._value += other
+                    if isinstance(other, self.__class__):
+                        self._value += other._value
+                    else:
+                        self._value += other
 
             if hasattr(type_, '__iand__'):
                 def __iand__(self, other):
-                    self._value &= other
+                    if isinstance(other, self.__class__):
+                        self._value &= other._value
+                    else:
+                        self._value &= other
 
             if hasattr(type_, '__idiv__'):
                 def __idiv__(self, other):
-                    self._value /= other
+                    if isinstance(other, self.__class__):
+                        self._value /= other._value
+                    else:
+                        self._value /= other
 
             if hasattr(type_, '__ifloordiv__'):
                 def __ifloordiv__(self, other):
-                    self._value //= other
+                    if isinstance(other, self.__class__):
+                        self._value //= other._value
+                    else:
+                        self._value //= other
 
             if hasattr(type_, '__ilshift__'):
                 def __ilshift__(self, other):
-                    self._value <<= other
+                    if isinstance(other, self.__class__):
+                        self._value <<= other._value
+                    else:
+                        self._value <<= other
 
             if hasattr(type_, '__imod__'):
                 def __imod__(self, other):
-                    self._value %= other
+                    if isinstance(other, self.__class__):
+                        self._value %= other._value
+                    else:
+                        self._value %= other
 
             if hasattr(type_, '__imul__'):
                 def __imul__(self, other):
-                    self._value *= other
+                    if isinstance(other, self.__class__):
+                        self._value *= other._value
+                    else:
+                        self._value *= other
 
             if hasattr(type_, '__index__'):
                 def __index__(self):
@@ -155,22 +206,41 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__ior__'):
                 def __ior__(self, other):
-                    self._value |= other
+                    if isinstance(other, self.__class__):
+                        self._value |= other._value
+                    else:
+                        self._value |= other
 
             if hasattr(type_, '__ipow__'):
                 def __ipow__(self, power, modulo=None):
-                    if modulo:
-                        self._value = pow(self._value, power, modulo)
+                    if isinstance(power, self.__class__):
+                        p = power._value
                     else:
-                        self._value **= power
+                        p = power
+
+                    if isinstance(module, self.__class__):
+                        m = modulo._value
+                    else:
+                        m = modulo
+                        
+                    if m:
+                        self._value = pow(self._value, p, m)
+                    else:
+                        self._value **= p
 
             if hasattr(type_, '__irshift__'):
                 def __irshift__(self, other):
-                    self._value >>= other
+                    if isinstance(other, self.__class__):
+                        self._value >>= other._value
+                    else:
+                        self._value >>= other
 
             if hasattr(type_, '__isub__'):
                 def __isub__(self, other):
-                    self._value -= other
+                    if isinstance(other, self.__class__):
+                        self._value -= other._value
+                    else:
+                        self._value -= other
 
             if hasattr(type_, '__iter__'):
                 def __iter__(self):
@@ -178,15 +248,24 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__itruediv__'):
                 def __itruediv__(self, other):
-                    return self._convert(other / self._value)
+                    if isinstance(other, self.__class__):
+                        self._value /= other._value
+                    else:
+                        self._value /= other
 
             if hasattr(type_, '__ixor__'):
                 def __ixor__(self, other):
-                    self._value ^= other
+                    if isinstance(other, self.__class__):
+                        self._value ^= other._value
+                    else:
+                        self._value ^= other
 
             if hasattr(type_, '__le__'):
                 def __le__(self, other):
-                    return self._convert(self._value <= other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value <= other._value)
+                    else:
+                        return self._convert(self._value <= other)
                 
             if hasattr(type_, '__len__'):
                 def __len__(self):
@@ -198,23 +277,38 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__lshift__'):
                 def __lshift__(self, other):
-                    return self._convert(self._value << other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value << other._value)
+                    else:
+                        return self._convert(self._value << other)
                 
             if hasattr(type_, '__lt__'):
                 def __lt__(self, other):
-                    return self._convert(self._value < other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value < other._value)
+                    else:
+                        return self._convert(self._value < other)
                 
             if hasattr(type_, '__mod__'):
                 def __mod__(self, other):
-                    return self._convert(self._value % other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value % other._value)
+                    else:
+                        return self._convert(self._value % other)
                 
             if hasattr(type_, '__mul__'):
                 def __mul__(self, other):
-                    return self._convert(self._value * other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value * other._value)
+                    else:
+                        return self._convert(self._value * other)
                 
             if hasattr(type_, '__ne__'):
                 def __ne__(self, other):
-                    return self._convert(self._value != other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value != other._value)
+                    else:
+                        return self._convert(self._value != other)
 
             if hasattr(type_, '__neg__'):
                 def __neg__(self):
@@ -230,7 +324,10 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__or__'):
                 def __or__(self, other):
-                    return self._convert(self._value | other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value | other._value)
+                    else:
+                        return self._convert(self._value | other)
 
             if hasattr(type_, '__pos__'):
                 def __pos__(self):
@@ -238,10 +335,20 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__pow__'):
                 def __pow__(self, power, modulo=None):
-                    if modulo:
-                        return self._convert(pow(self._value, power, modulo))
+                    if isinstance(power, self.__class__):
+                        p = power._value
                     else:
-                        return self._convert(self._value ** other)
+                        p = power
+
+                    if isinstance(modulo, self.__class__):
+                        m = modulo._value
+                    else:
+                        m = modulo
+                    
+                    if m:
+                        return self._convert(pow(self._value, p, m))
+                    else:
+                        return self._convert(self._value ** p)
                 
             if hasattr(type_, '__radd__'):
                 def __radd__(self, other):
@@ -329,7 +436,10 @@ class WrapperFactory(object):
                 
             if hasattr(type_, '__truediv__'):
                 def __truediv__(self, other):
-                    return self._convert(self._value / other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value / other._value)
+                    else:
+                        return self._convert(self._value / other)
 
             if hasattr(type_, '__unicode__'):
                 def __unicode__(self):
@@ -337,7 +447,10 @@ class WrapperFactory(object):
 
             if hasattr(type_, '__xor__'):
                 def __xor__(self, other):
-                    return self._convert(self._value ^ other)
+                    if isinstance(other, self.__class__):
+                        return self.__class__(self._value ^ other._value)
+                    else:
+                        return self._convert(self._value ^ other)
 
             def __getattr__(self, attr):
                 if hasattr(self._value, attr):
